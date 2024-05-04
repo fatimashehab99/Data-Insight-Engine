@@ -18,6 +18,7 @@
 package org.example;
 
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.DoFn;
@@ -44,25 +45,39 @@ import org.slf4j.LoggerFactory;
  *   --runner=DataflowRunner
  */
 public class StarterPipeline {
-  private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
+ // private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
 
   public static void main(String[] args) {
-    Pipeline p = Pipeline.create(
-        PipelineOptionsFactory.fromArgs(args).withValidation().create());
+      Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
+              .as(Options.class);
+      //creating pipeline
+      Pipeline p = Pipeline.create(options);
+    // Read JSON data from file
+    p.apply("Read Mongo Data From JSON", TextIO.read().from(options.getInputFile()))
+            // Print each JSON element to console
+            .apply("Print to Console", ParDo.of(new DoFn<String, Void>() {
+              @ProcessElement
+              public void processElement(ProcessContext c) {
+                System.out.println(c.element());
+                c.output(null);
+              }
+            }));
 
-    p.apply(Create.of("Hello", "World"))
-    .apply(MapElements.via(new SimpleFunction<String, String>() {
-      @Override
-      public String apply(String input) {
-        return input.toUpperCase();
-      }
-    }))
-    .apply(ParDo.of(new DoFn<String, Void>() {
-      @ProcessElement
-      public void processElement(ProcessContext c)  {
-        LOG.info(c.element());
-      }
-    }));
+    p.run().waitUntilFinish();
+
+//    p.apply(Create.of("Hello", "World"))
+//    .apply(MapElements.via(new SimpleFunction<String, String>() {
+//      @Override
+//      public String apply(String input) {
+//        return input.toUpperCase();
+//      }
+//    }))
+//    .apply(ParDo.of(new DoFn<String, Void>() {
+//      @ProcessElement
+//      public void processElement(ProcessContext c)  {
+//        LOG.info(c.element());
+//      }
+//    }));
 
     p.run();
   }
