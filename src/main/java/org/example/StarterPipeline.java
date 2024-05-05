@@ -17,7 +17,12 @@
  */
 package org.example;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.FileIO;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
@@ -25,8 +30,15 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.SimpleFunction;
+import org.apache.beam.sdk.values.PCollection;
+import org.example.DataTransformation.PageViewsTransformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A starter example for writing Beam programs.
@@ -40,45 +52,40 @@ import org.slf4j.LoggerFactory;
  *
  * <p>To run this starter example using managed resource in Google Cloud
  * Platform, you should specify the following command-line options:
- *   --project=<YOUR_PROJECT_ID>
- *   --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE>
- *   --runner=DataflowRunner
+ * --project=<YOUR_PROJECT_ID>
+ * --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE>
+ * --runner=DataflowRunner
  */
 public class StarterPipeline {
- // private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
+    // private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
 
-  public static void main(String[] args) {
-      Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
-              .as(Options.class);
-      //creating pipeline
-      Pipeline p = Pipeline.create(options);
-    // Read JSON data from file
-    p.apply("Read Mongo Data From JSON", TextIO.read().from(options.getInputFile()))
-            // Print each JSON element to console
-            .apply("Print to Console", ParDo.of(new DoFn<String, Void>() {
-              @ProcessElement
-              public void processElement(ProcessContext c) {
-                System.out.println(c.element());
-                c.output(null);
-              }
-            }));
+    public static void main(String[] args) {
+        // pipeline options
+        Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
+                .as(Options.class);
 
-    p.run().waitUntilFinish();
+        //creating pipeline
+        Pipeline p = Pipeline.create(options);
 
-//    p.apply(Create.of("Hello", "World"))
-//    .apply(MapElements.via(new SimpleFunction<String, String>() {
-//      @Override
-//      public String apply(String input) {
-//        return input.toUpperCase();
-//      }
-//    }))
-//    .apply(ParDo.of(new DoFn<String, Void>() {
-//      @ProcessElement
-//      public void processElement(ProcessContext c)  {
-//        LOG.info(c.element());
-//      }
-//    }));
+        //reading from json
+        PCollection<FileIO.ReadableFile> jsonLines = p.apply("Read JSON", FileIO.match().filepattern(options.getInputFile()))
+                .apply("Read Matches", FileIO.readMatches());
 
-    p.run();
-  }
+        //transforming json data to page view objects
+        PCollection<PageView> pageViews = jsonLines.apply("Read JSON Lines", ParDo.of(new PageViewsTransformation()));
+
+        // Print page views to console
+        pageViews.apply("Print Page Views", ParDo.of(new PrintFn()));
+        p.run().waitUntilFinish();
+    }
+
+    static class PrintFn extends DoFn<PageView, Void> {
+        @ProcessElement
+        public void processElement(ProcessContext c) {
+            System.out.println(c.element());
+        }
+    }
 }
+
+
+

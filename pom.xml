@@ -103,6 +103,21 @@
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>2.50.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10</version> <!-- Use the latest version -->
+    </dependency>
+    <dependency>
+      <groupId>com.maxmind.geoip</groupId>
+      <artifactId>geoip-api</artifactId>
+      <version>1.2.14</version>
+    </dependency>
+    <dependency>
+      <groupId>com.maxmind.geoip2</groupId>
+      <artifactId>geoip2</artifactId>
+      <version>2.16.0</version>
+    </dependency>
 
     <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
@@ -114,6 +129,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.example</groupId>
+      <artifactId>Data-Insight-Engine</artifactId>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
