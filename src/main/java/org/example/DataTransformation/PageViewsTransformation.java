@@ -60,21 +60,14 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 for (JsonElement tagElement : postTagsArray) {
                     postTags.add(tagElement.getAsString());
                 }
-
                 //create page view object
-                PageView pageView = new PageView(postId, ip, browser, device, postType, postImage, postUrl, postCategory, domain, userId, postPublishDate, date, postTags, CountryName, CountryCode);
+                PageView pageView = new PageView(postId, ip, browser, device, postType, postImage, postUrl, postCategory, domain,
+                        userId, postPublishDate, date, postTags, CountryName, CountryCode);
 
                 c.output(pageView);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    static class PrintFn extends DoFn<PageView, Void> {
-        @ProcessElement
-        public void processElement(ProcessContext c) {
-            System.out.println(c.element());
         }
     }
 
@@ -91,16 +84,16 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
             return null;
         }
     }
-
-    //This function is used get the country name from the remoteIp
+    //This function is used get the country name from remoteIp
     static Dictionary<String, String> getCountryByIP(String ipAddress) throws IOException, GeoIp2Exception {
-        String databaseFile = "src/sources/GeoLite2-City.mmdb";
+
+        //read country from maxmind database using ip
+        String databaseFile = "gs://my-data99/helpers/GeoLite2-City.mmdb";
         File database = new File(databaseFile);
         DatabaseReader reader = new DatabaseReader.Builder(database).build();
-
         InetAddress ip = InetAddress.getByName(ipAddress);
-
         CityResponse response = reader.city(ip);
+
         // Create a Dictionary to store country code and name
         Dictionary<String, String> country = new Hashtable<>();
 
@@ -112,8 +105,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
         country.put("CountryCode", countryCode);
         country.put("CountryName", countryName);
 
-
-        // Return the Dictionary containing country code and name
+        // Return a dictionary containing country code and name
         return country;
     }
 }

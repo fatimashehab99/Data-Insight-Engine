@@ -36,6 +36,7 @@ public class PageViewSchema {
             c.output(row);
         }
 
+        ///to get page view fields name
         public static TableSchema getPageViewSchema() {
             List<TableFieldSchema> fields = new ArrayList<>();
             fields.add(new TableFieldSchema().setName("PostId").setType("STRING"));

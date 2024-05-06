@@ -26,6 +26,7 @@ public class PostTagSchema {
             }
         }
 
+        ///to get post tag fields name
         public static TableSchema getPostTagsSchema() {
             List<TableFieldSchema> fields = new ArrayList<>();
             fields.add(new TableFieldSchema().setName("PostId").setType("STRING"));

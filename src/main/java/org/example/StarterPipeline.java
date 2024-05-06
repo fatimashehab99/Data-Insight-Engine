@@ -34,6 +34,7 @@ import org.example.Models.PageView;
 
 import static org.example.BigQuerySchemas.PageViewSchema.PageViewsSchema.getPageViewSchema;
 import static org.example.BigQuerySchemas.PostTagSchema.PostTags.getPostTagsSchema;
+import static org.example.Constants.GCPConstants.*;
 
 /**
  * A starter example for writing Beam programs.
@@ -52,20 +53,16 @@ import static org.example.BigQuerySchemas.PostTagSchema.PostTags.getPostTagsSche
  * --runner=DataflowRunner
  */
 public class StarterPipeline {
-    private static final String PROJECT_ID = "marine-fusion-414420";
-    private static final String DATASET_ID = "data_insight_engine";
-    private static final String PageViewTable = "page_views";
-    private static final String PostTags = "post_tags";
-
 
     public static void main(String[] args) {
         // pipeline options
         Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
                 .as(Options.class);
+
         // Set Dataflow specific options
-        options.setJobName("my-dataflow-job");
-        options.setTempLocation("gs://my-data99/data_insight_engine_pipeline_template");
-        options.setProject(PROJECT_ID);
+        options.setJobName("data-transformation-job"); //job name
+        options.setTempLocation("gs://my-data99/data_insight_engine_pipeline_template");//cloud storage temp file location
+        options.setProject(PROJECT_ID);//your GCP project id
         options.setRegion("us-central1");//set region
         options.setRunner(DataflowRunner.class);
 
@@ -73,15 +70,15 @@ public class StarterPipeline {
         //creating pipeline
         Pipeline p = Pipeline.create(options);
 
-        //reading from json
+        //reading data from json
         PCollection<FileIO.ReadableFile> jsonLines = p.apply("Read JSON", FileIO.match().filepattern(options.getInputFile()))
                 .apply("Read Matches", FileIO.readMatches());
 
         //transforming json data to page view objects
         PCollection<PageView> pageViews = jsonLines.apply("Read JSON Lines", ParDo.of(new PageViewsTransformation()));
 
-        //Writing to Page Views Big query
-        pageViews.apply("Write To Page Views Big Query", ParDo.of(new PageViewSchema.PageViewsSchema()))
+        //Writing to Page Views Big query table
+        pageViews.apply("Write To Page Views Big Query Table", ParDo.of(new PageViewSchema.PageViewsSchema()))
                 .apply(BigQueryIO.writeTableRows()
                         .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PageViewTable))
                         .withSchema(getPageViewSchema())
@@ -89,15 +86,14 @@ public class StarterPipeline {
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
-        //Writing to Post Tags Big query
-        pageViews.apply("Write To Post Tags Big Query", ParDo.of(new PostTagSchema.PostTags()))
+        //Writing to Post Tags Big query table
+        pageViews.apply("Write To Post Tags Big Query Table", ParDo.of(new PostTagSchema.PostTags()))
                 .apply(BigQueryIO.writeTableRows()
                         .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PostTags))
                         .withSchema(getPostTagsSchema())
                         .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
-
 
         p.run().waitUntilFinish();
     }
