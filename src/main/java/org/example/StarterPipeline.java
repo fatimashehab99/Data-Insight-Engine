@@ -62,7 +62,12 @@ public class StarterPipeline {
         // pipeline options
         Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
                 .as(Options.class);
-
+        // Set Dataflow specific options
+        options.setJobName("my-dataflow-job");
+        options.setTempLocation("gs://my-data99/data_insight_engine_pipeline_template");
+        options.setProject(PROJECT_ID);
+        options.setRegion("us-central1");//set region
+        options.setRunner(DataflowRunner.class);
 
 
         //creating pipeline
