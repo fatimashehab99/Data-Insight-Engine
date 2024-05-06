@@ -17,28 +17,23 @@
  */
 package org.example;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.FileIO;
-import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.options.ValueProvider;
 import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.values.PCollection;
+import org.example.BigQuerySchemas.PageViewSchema;
+import org.example.BigQuerySchemas.PostTagSchema;
 import org.example.DataTransformation.PageViewsTransformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.Models.Options;
+import org.example.Models.PageView;
 
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import static org.example.BigQuerySchemas.PageViewSchema.PageViewsSchema.getPageViewSchema;
+import static org.example.BigQuerySchemas.PostTagSchema.PostTags.getPostTagsSchema;
 
 /**
  * A starter example for writing Beam programs.
@@ -57,12 +52,18 @@ import java.util.Date;
  * --runner=DataflowRunner
  */
 public class StarterPipeline {
-    // private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
+    private static final String PROJECT_ID = "marine-fusion-414420";
+    private static final String DATASET_ID = "data_insight_engine";
+    private static final String PageViewTable = "page_views";
+    private static final String PostTags = "post_tags";
+
 
     public static void main(String[] args) {
         // pipeline options
         Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
                 .as(Options.class);
+
+
 
         //creating pipeline
         Pipeline p = Pipeline.create(options);
@@ -74,16 +75,26 @@ public class StarterPipeline {
         //transforming json data to page view objects
         PCollection<PageView> pageViews = jsonLines.apply("Read JSON Lines", ParDo.of(new PageViewsTransformation()));
 
-        // Print page views to console
-        pageViews.apply("Print Page Views", ParDo.of(new PrintFn()));
-        p.run().waitUntilFinish();
-    }
+        //Writing to Page Views Big query
+        pageViews.apply("Write To Page Views Big Query", ParDo.of(new PageViewSchema.PageViewsSchema()))
+                .apply(BigQueryIO.writeTableRows()
+                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PageViewTable))
+                        .withSchema(getPageViewSchema())
+                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
+                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
-    static class PrintFn extends DoFn<PageView, Void> {
-        @ProcessElement
-        public void processElement(ProcessContext c) {
-            System.out.println(c.element());
-        }
+        //Writing to Post Tags Big query
+        pageViews.apply("Write To Post Tags Big Query", ParDo.of(new PostTagSchema.PostTags()))
+                .apply(BigQueryIO.writeTableRows()
+                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PostTags))
+                        .withSchema(getPostTagsSchema())
+                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
+                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
+
+
+        p.run().waitUntilFinish();
     }
 }
 

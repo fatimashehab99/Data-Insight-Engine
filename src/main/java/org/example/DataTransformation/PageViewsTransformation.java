@@ -4,7 +4,7 @@ import com.google.gson.*;
 
 import org.apache.beam.sdk.io.FileIO;
 import org.apache.beam.sdk.transforms.DoFn;
-import org.example.PageView;
+import org.example.Models.PageView;
 
 import java.io.File;
 import java.io.IOException;
