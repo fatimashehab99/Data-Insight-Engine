@@ -88,7 +88,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
     static Dictionary<String, String> getCountryByIP(String ipAddress) throws IOException, GeoIp2Exception {
 
         //read country from maxmind database using ip
-        String databaseFile = "gs://my-data99/helpers/GeoLite2-City.mmdb";
+        String databaseFile = "src/sources/GeoLite2-City.mmdb";
         File database = new File(databaseFile);
         DatabaseReader reader = new DatabaseReader.Builder(database).build();
         InetAddress ip = InetAddress.getByName(ipAddress);

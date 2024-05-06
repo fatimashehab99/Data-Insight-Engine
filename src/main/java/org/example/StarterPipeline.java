@@ -77,19 +77,21 @@ public class StarterPipeline {
         //transforming json data to page view objects
         PCollection<PageView> pageViews = jsonLines.apply("Read JSON Lines", ParDo.of(new PageViewsTransformation()));
 
-        //Writing to Page Views Big query table
-        pageViews.apply("Write To Page Views Big Query Table", ParDo.of(new PageViewSchema.PageViewsSchema()))
-                .apply(BigQueryIO.writeTableRows()
-                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PageViewTable))
-                        .withSchema(getPageViewSchema())
-                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
-                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
-                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
+            //Writing to Page Views Big query table
+            pageViews.apply("Write To Page Views Big Query Table", ParDo.of(new PageViewSchema.PageViewsSchema()))
+                    .apply(BigQueryIO.writeTableRows()
+                            .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, "page_views"))
+                            .withSchema(getPageViewSchema())
+                            .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
+                            .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+                            .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
+
+
 
         //Writing to Post Tags Big query table
         pageViews.apply("Write To Post Tags Big Query Table", ParDo.of(new PostTagSchema.PostTags()))
                 .apply(BigQueryIO.writeTableRows()
-                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PostTags))
+                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, "post_tags"))
                         .withSchema(getPostTagsSchema())
                         .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmp/"))
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
