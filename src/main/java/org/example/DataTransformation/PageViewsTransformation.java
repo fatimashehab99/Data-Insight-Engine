@@ -24,6 +24,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
         FileIO.ReadableFile file = c.element();
         try {
             //reading from json
+            assert file != null;
             String json = file.readFullyAsUTF8String();
             JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
 
@@ -42,6 +43,8 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 String postCategory = jsonObject.get("PostCategory").getAsString();
                 String domain = jsonObject.get("Domain").getAsString();
                 String userId = jsonObject.get("UserId").getAsString();
+                String CountryName = jsonObject.get("CountryName").getAsString();
+                String CountryCode = jsonObject.get("CountryCode").getAsString();
 
                 // get and format post publish date and date
                 String postPublishDate = extractAndFormatDate(jsonObject, "PostPublishDate");
@@ -50,10 +53,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 // Get PostTags
                 JsonArray postTagsArray = jsonObject.getAsJsonArray("PostTags");
 
-                //Get country name and code
-                Dictionary<String, String> country = getCountryByIP(ip);
-                String CountryName = country.get("CountryName");
-                String CountryCode = country.get("CountryCode");
+
 
                 // Extract postTags into a list
                 List<String> postTags = new ArrayList<>();
@@ -83,30 +83,6 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
             e.printStackTrace();
             return null;
         }
-    }
-    //This function is used get the country name from remoteIp
-    static Dictionary<String, String> getCountryByIP(String ipAddress) throws IOException, GeoIp2Exception {
-
-        //read country from maxmind database using ip
-        String databaseFile = "src/sources/GeoLite2-City.mmdb";
-        File database = new File(databaseFile);
-        DatabaseReader reader = new DatabaseReader.Builder(database).build();
-        InetAddress ip = InetAddress.getByName(ipAddress);
-        CityResponse response = reader.city(ip);
-
-        // Create a Dictionary to store country code and name
-        Dictionary<String, String> country = new Hashtable<>();
-
-        // Retrieve country code and name
-        String countryCode = response.getCountry().getIsoCode();
-        String countryName = response.getCountry().getName();
-
-        // Add country code and name to the Dictionary
-        country.put("CountryCode", countryCode);
-        country.put("CountryName", countryName);
-
-        // Return a dictionary containing country code and name
-        return country;
     }
 }
 

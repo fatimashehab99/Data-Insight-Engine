@@ -60,11 +60,11 @@ public class StarterPipeline {
                 .as(Options.class);
 
         // Set Dataflow specific options
-        options.setJobName("data-transformation-job"); //job name
-        options.setTempLocation("gs://my-data99/data_insight_engine_pipeline_template");//cloud storage temp file location
-        options.setProject(PROJECT_ID);//your GCP project id
-        options.setRegion("us-central1");//set region
-        options.setRunner(DataflowRunner.class);
+//        options.setJobName("data-transformation-job"); //job name
+//        options.setTempLocation("gs://my-data99/data_insight_engine_pipeline_template2");//cloud storage temp file location
+//        options.setProject(PROJECT_ID);//your GCP project id
+//        options.setRegion("us-central1");//set region
+//        options.setRunner(DataflowRunner.class);
 
 
         //creating pipeline
