@@ -54,7 +54,6 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 JsonArray postTagsArray = jsonObject.getAsJsonArray("PostTags");
 
 
-
                 // Extract postTags into a list
                 List<String> postTags = new ArrayList<>();
                 for (JsonElement tagElement : postTagsArray) {

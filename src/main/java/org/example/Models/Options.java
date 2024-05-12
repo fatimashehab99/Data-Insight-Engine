@@ -9,7 +9,6 @@ public interface Options extends DataflowPipelineOptions {
     @Validation.Required
     @Description("Path of the file to read from")
     ValueProvider<String> getInputFile();
+
     void setInputFile(ValueProvider<String> value);
-
-
 }

@@ -9,28 +9,29 @@ import org.example.Models.PageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.helpers.Constants.*;
+
 public class PostTagSchema {
     public static class PostTags extends DoFn<PageView, TableRow> {
         @ProcessElement
         public void processElement(ProcessContext c) {
             PageView pageView = c.element();
 
-            // Assuming PageView is a class containing getters for fields like PostId and PostTags
             assert pageView != null;
             for (String tag : pageView.getPostTags()) {
                 TableRow row = new TableRow()
-                        .set("PostId", pageView.getPostId())
-                        .set("Name", tag);
+                        .set(POST_ID, pageView.getPostId())
+                        .set(TAG, tag);
 
                 c.output(row);
             }
         }
 
         ///to get post tag fields name
-        public static TableSchema getPostTagsSchema() {
+        public static TableSchema getPostTagSchema() {
             List<TableFieldSchema> fields = new ArrayList<>();
-            fields.add(new TableFieldSchema().setName("PostId").setType("STRING"));
-            fields.add(new TableFieldSchema().setName("Name").setType("STRING"));
+            fields.add(new TableFieldSchema().setName(POST_ID).setType("STRING"));
+            fields.add(new TableFieldSchema().setName(TAG).setType("STRING"));
             return new TableSchema().setFields(fields);
         }
     }
