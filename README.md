@@ -37,5 +37,5 @@ CREATE TABLE data_insight_engine.post_tags (
     tags STRING
 );
 ```
-### III. Data Visulization 
+### IV.Data Visualization
 In progress using looker studio
