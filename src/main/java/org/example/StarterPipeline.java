@@ -81,12 +81,13 @@ public class StarterPipeline {
         PCollection<PageView> pageViews = jsonLines.apply("TransformData", ParDo.of(new PageViewsTransformation()));
 
         //parallel branching
+
         //Writing to Page Views Big query table
         pageViews.apply("ConvertToPageViewsBQ", ParDo.of(new PageViewSchema.PageViewsSchema()))
                 .apply("WriteToPageViewsBQ", BigQueryIO.writeTableRows()
                         .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, PAGEVIEWS_TABLE))
                         .withSchema(getPageViewSchema())
-                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmpBQ/"))
+                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://data_storage_2024/data-insight-engine/tmpBQ/"))
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
@@ -96,7 +97,7 @@ public class StarterPipeline {
                 .apply("WriteToPageViewsBQ", BigQueryIO.writeTableRows()
                         .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, POST_TAGS_TABLE))
                         .withSchema(getPostTagSchema())
-                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://my-data99/tmpBQ/"))
+                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://data_storage_2024/data-insight-engine/tmpBQ/"))
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 

@@ -1,10 +1,9 @@
 package org.example.helpers;
 
 public class Constants {
-    public static final String PROJECT_ID = "marine-fusion-414420";
+    public static final String PROJECT_ID = "vocal-pad-423203-q7";
     public static final String DATASET_ID = "data_insight_engine";
-    public static final String PATH = "gs://my-data99/data-insight-engine";
-
+    public static final String PATH = "gs://data_storage_2024/data-insight-engine";
 
     //GCP constants
     public static final String PAGEVIEWS_TABLE = "page_views";
