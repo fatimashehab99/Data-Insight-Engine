@@ -8,7 +8,9 @@ Data Insight Engine is a comprehensive data anlytics tool with three main parts.
 A Java Apache Beam is written to be run on a Dataflow pipeline. This code reads and parses the JSON lines containing the data. It then transforms it into page view objects, which are subsequently inserted into BigQuery for later analysis.
 
 ![Data flow pipeline template showing the stages during data transformation.](https://github.com/fatimashehab99/Data-Insight-Engine/blob/master/Screenshot%202024-05-13%20130912.png)
-Data flow pipeline template showing the stages during data transformation.
+
+**Data flow pipeline template showing the stages during data transformation.**{: style="font-size: small;"}
+
 
 
 ### III. Big Query 
