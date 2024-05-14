@@ -50,14 +50,15 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 String postPublishDate = extractAndFormatDate(jsonObject, "PostPublishDate");
                 String date = extractAndFormatDate(jsonObject, "Date");
 
-                // Get PostTags
-                JsonArray postTagsArray = jsonObject.getAsJsonArray("PostTags");
-
 
                 // Extract postTags into a list
+                // Get PostTags
                 List<String> postTags = new ArrayList<>();
-                for (JsonElement tagElement : postTagsArray) {
-                    postTags.add(tagElement.getAsString());
+                if (jsonObject.has("PostTags") && !jsonObject.get("PostTags").isJsonNull()) {
+                    JsonArray postTagsArray = jsonObject.getAsJsonArray("PostTags");
+                    for (JsonElement tagElement : postTagsArray) {
+                        postTags.add(tagElement.getAsString());
+                    }
                 }
                 //create page view object
                 PageView pageView = new PageView(postId, ip, browser, device, postType, postImage, postUrl, postCategory, domain,

@@ -103,4 +103,17 @@ public class PageView implements Serializable {
     public String getCountryCode() {
         return CountryCode;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PageView pageView = (PageView) o;
+        return Objects.equals(PostId, pageView.PostId) && Objects.equals(Ip, pageView.Ip) && Objects.equals(Browser, pageView.Browser) && Objects.equals(Device, pageView.Device) && Objects.equals(PostType, pageView.PostType) && Objects.equals(PostImage, pageView.PostImage) && Objects.equals(PostUrl, pageView.PostUrl) && Objects.equals(PostCategory, pageView.PostCategory) && Objects.equals(Domain, pageView.Domain) && Objects.equals(UserId, pageView.UserId) && Objects.equals(PostPublishDate, pageView.PostPublishDate) && Objects.equals(Date, pageView.Date) && Objects.equals(PostTags, pageView.PostTags) && Objects.equals(CountryName, pageView.CountryName) && Objects.equals(CountryCode, pageView.CountryCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(PostId, Ip, Browser, Device, PostType, PostImage, PostUrl, PostCategory, Domain, UserId, PostPublishDate, Date, PostTags, CountryName, CountryCode);
+    }
 }

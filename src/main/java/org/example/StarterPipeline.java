@@ -61,14 +61,14 @@ public class StarterPipeline {
                 .as(Options.class);
 
         // Set Dataflow specific options
-        options.setJobName("data-insight-engine-job"); //job name
-        options.setTempLocation(PATH + "/tmp");//cloud storage temp file location
-        options.setProject(PROJECT_ID);// GCP project id
-        options.setRegion("us-central1");//set region
-        options.setStagingLocation(PATH + "/staging");
-        options.setTemplateLocation(PATH + "/template");
-        options.setMaxNumWorkers(10);//max workers
-        options.setRunner(DataflowRunner.class);//set data flow as runner
+//        options.setJobName("data-insight-engine-job"); //job name
+//        options.setTempLocation(PATH + "/tmp");//cloud storage temp file location
+//        options.setProject(PROJECT_ID);// GCP project id
+//        options.setRegion("us-central1");//set region
+//        options.setStagingLocation(PATH + "/staging");
+//        options.setTemplateLocation(PATH + "/template");
+//        options.setMaxNumWorkers(10);//max workers
+//        options.setRunner(DataflowRunner.class);//set data flow as runner
 
         //creating pipeline
         Pipeline p = Pipeline.create(options);
