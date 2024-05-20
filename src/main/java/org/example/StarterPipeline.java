@@ -60,15 +60,15 @@ public class StarterPipeline {
         Options options = PipelineOptionsFactory.fromArgs(args).withValidation()
                 .as(Options.class);
 
-        // Set Dataflow specific options
-        options.setJobName("data-insight-engine-job"); //job name
-        options.setTempLocation(PATH + "/tmp");//cloud storage temp file location
-        options.setProject(PROJECT_ID);// GCP project id
-        options.setRegion("us-central1");//set region
-        options.setStagingLocation(PATH + "/staging");
-        options.setTemplateLocation(PATH + "/template");
-        options.setMaxNumWorkers(10);//max workers
-        options.setRunner(DataflowRunner.class);//set data flow as runner
+//        // Set Dataflow specific options
+//        options.setJobName("data-insight-engine-job"); //job name
+//        options.setTempLocation(PATH + "/tmp");//cloud storage temp file location
+//        options.setProject(PROJECT_ID);// GCP project id
+//        options.setRegion("us-central1");//set region
+//        options.setStagingLocation(PATH + "/staging");
+//        options.setTemplateLocation(PATH + "/template");
+//        options.setMaxNumWorkers(10);//max workers
+//        options.setRunner(DataflowRunner.class);//set data flow as runner
 
         //creating pipeline
         Pipeline p = Pipeline.create(options);
@@ -92,14 +92,14 @@ public class StarterPipeline {
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
 
-        //Writing to Post Tags Big query table
-        pageViews.apply("ConvertToPageTagsBQ", ParDo.of(new PostTagSchema.PostTags()))
-                .apply("WriteToPageViewsBQ", BigQueryIO.writeTableRows()
-                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, POST_TAGS_TABLE))
-                        .withSchema(getPostTagSchema())
-                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://data_storage_2024/data-insight-engine/tmpBQ/"))
-                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
-                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
+//        //Writing to Post Tags Big query table
+//        pageViews.apply("ConvertToPageTagsBQ", ParDo.of(new PostTagSchema.PostTags()))
+//                .apply("WriteToPageViewsBQ", BigQueryIO.writeTableRows()
+//                        .to(String.format("%s:%s.%s", PROJECT_ID, DATASET_ID, POST_TAGS_TABLE))
+//                        .withSchema(getPostTagSchema())
+//                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://data_storage_2024/data-insight-engine/tmpBQ/"))
+//                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+//                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
         p.run();
     }

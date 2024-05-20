@@ -31,6 +31,7 @@ public class PageViewSchema {
                     .set(USER_ID, pageview.getUserId())
                     .set(Post_Publish_Date, pageview.getPostPublishDate())
                     .set(DATE, pageview.getDate())
+                    .set(POST_TAG,pageview.getPostTags())
                     .set(COUNTRY_NAME, pageview.getCountryName())
                     .set(COUNTRY_CODE, pageview.getCountryCode());
             c.output(row);
@@ -52,6 +53,7 @@ public class PageViewSchema {
             fields.add(new TableFieldSchema().setName(Post_Publish_Date).setType("STRING"));
             fields.add(new TableFieldSchema().setName(DATE).setType("STRING"));
             fields.add(new TableFieldSchema().setName(COUNTRY_NAME).setType("STRING"));
+            fields.add(new TableFieldSchema().setName(POST_TAG).setType("STRING").setMode("REPEATED"));
             fields.add(new TableFieldSchema().setName(COUNTRY_CODE).setType("STRING"));
             return new TableSchema().setFields(fields);
         }
