@@ -2,8 +2,8 @@ package org.example.helpers;
 
 public class Constants {
     public static final String PROJECT_ID = "vocal-pad-423203-q7";
-    public static final String DATASET_ID = "data_insight_engine_v2";
-    public static final String PATH = "gs://data_storage_2024/data-insight-engine_v2";
+    public static final String DATASET_ID = "data_insight_engine_v3";
+    public static final String PATH = "gs://data_storage_2024/data-insight-engine_v3";
 
     //GCP constants
     public static final String PAGEVIEWS_TABLE = "page_views";
@@ -23,5 +23,6 @@ public class Constants {
     public static final String COUNTRY_NAME = "country_name";
     public static final String COUNTRY_CODE = "country_code";
     public static final String TAG = "tag";
-    public static final String POST_TAG="post_tags";
+    public static final String POST_TAG = "post_tags";
+    public static final String POST_AUTHOR = "post_author";
 }

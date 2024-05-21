@@ -45,6 +45,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 String userId = jsonObject.get("UserId").getAsString();
                 String CountryName = jsonObject.get("CountryName").getAsString();
                 String CountryCode = jsonObject.get("CountryCode").getAsString();
+                String PostAuthor = jsonObject.get("PostAuthor").getAsString();
 
                 // get and format post publish date and date
                 String postPublishDate = extractAndFormatDate(jsonObject, "PostPublishDate");
@@ -62,7 +63,7 @@ public class PageViewsTransformation extends DoFn<FileIO.ReadableFile, PageView>
                 }
                 //create page view object
                 PageView pageView = new PageView(postId, ip, browser, device, postType, postImage, postUrl, postCategory, domain,
-                        userId, postPublishDate, date, postTags, CountryName, CountryCode);
+                        userId, postPublishDate, date, postTags, CountryName, CountryCode, PostAuthor);
 
                 c.output(pageView);
             }

@@ -6,10 +6,11 @@ import org.apache.beam.sdk.coders.SerializableCoder;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Date;
 
 @DefaultCoder(SerializableCoder.class)
 public class PageView implements Serializable {
-    private String PostId ;
+    private String PostId;
     private String Ip;
     private String Browser;
     private String Device;
@@ -17,7 +18,7 @@ public class PageView implements Serializable {
     private String PostImage;
     private String PostUrl;
     private String PostCategory;
-
+    private String PostAuthor;
     private String Domain;
     private String UserId;
     private String PostPublishDate;
@@ -26,7 +27,7 @@ public class PageView implements Serializable {
     private String CountryName;
     private String CountryCode;
 
-    public PageView(String postId, String ip, String browser, String device, String postType, String postImage, String postUrl, String postCategory, String domain, String userId, String postPublishDate, String date, List<String> postTags, String countryName, String countryCode) {
+    public PageView(String postId, String ip, String browser, String device, String postType, String postImage, String postUrl, String postCategory, String domain, String userId, String postPublishDate, String date, List<String> postTags, String countryName, String countryCode, String postAuthor) {
         PostId = postId;
         Ip = ip;
         Browser = browser;
@@ -42,6 +43,15 @@ public class PageView implements Serializable {
         PostTags = postTags;
         CountryName = countryName;
         CountryCode = countryCode;
+        PostAuthor = postAuthor;
+    }
+
+    public String getPostAuthor() {
+        return PostAuthor;
+    }
+
+    public void setPostAuthor(String postAuthor) {
+        PostAuthor = postAuthor;
     }
 
     public String getPostId() {
@@ -109,11 +119,11 @@ public class PageView implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageView pageView = (PageView) o;
-        return Objects.equals(PostId, pageView.PostId) && Objects.equals(Ip, pageView.Ip) && Objects.equals(Browser, pageView.Browser) && Objects.equals(Device, pageView.Device) && Objects.equals(PostType, pageView.PostType) && Objects.equals(PostImage, pageView.PostImage) && Objects.equals(PostUrl, pageView.PostUrl) && Objects.equals(PostCategory, pageView.PostCategory) && Objects.equals(Domain, pageView.Domain) && Objects.equals(UserId, pageView.UserId) && Objects.equals(PostPublishDate, pageView.PostPublishDate) && Objects.equals(Date, pageView.Date) && Objects.equals(PostTags, pageView.PostTags) && Objects.equals(CountryName, pageView.CountryName) && Objects.equals(CountryCode, pageView.CountryCode);
+        return Objects.equals(PostId, pageView.PostId) && Objects.equals(Ip, pageView.Ip) && Objects.equals(Browser, pageView.Browser) && Objects.equals(Device, pageView.Device) && Objects.equals(PostType, pageView.PostType) && Objects.equals(PostImage, pageView.PostImage) && Objects.equals(PostUrl, pageView.PostUrl) && Objects.equals(PostCategory, pageView.PostCategory) && Objects.equals(PostAuthor, pageView.PostAuthor) && Objects.equals(Domain, pageView.Domain) && Objects.equals(UserId, pageView.UserId) && Objects.equals(PostPublishDate, pageView.PostPublishDate) && Objects.equals(Date, pageView.Date) && Objects.equals(PostTags, pageView.PostTags) && Objects.equals(CountryName, pageView.CountryName) && Objects.equals(CountryCode, pageView.CountryCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(PostId, Ip, Browser, Device, PostType, PostImage, PostUrl, PostCategory, Domain, UserId, PostPublishDate, Date, PostTags, CountryName, CountryCode);
+        return Objects.hash(PostId, Ip, Browser, Device, PostType, PostImage, PostUrl, PostCategory, PostAuthor, Domain, UserId, PostPublishDate, Date, PostTags, CountryName, CountryCode);
     }
 }
