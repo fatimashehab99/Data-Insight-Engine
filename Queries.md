@@ -17,7 +17,8 @@ CREATE TABLE data_insight_engine.page_views (
     date DateTime,
     country_name STRING,
     country_code STRING,
-    post_tags Array<String>
+    post_tags Array<String>,
+    post_author STRING
 );
 
 ```
